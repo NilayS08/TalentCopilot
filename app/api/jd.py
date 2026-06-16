@@ -4,6 +4,7 @@ from fastapi import File
 
 from app.services.pdf_parser import save_uploaded_file
 from app.services.pdf_parser import extract_text_from_pdf
+from app.services.jd_extractor import extract_requirements
 
 router = APIRouter(
     prefix="/jd",
@@ -21,3 +22,13 @@ async def upload_jd(
         "filename": file.filename,
         "text": extracted_text
     }
+
+# new endpoint to process the extracted JD text and return structured requirements
+@router.post("/extract-requirements")
+async def extract_jd_requirements(file: UploadFile = File(...)):
+    file_path = await save_uploaded_file(file)
+    jd_text = extract_text_from_pdf(file_path)
+
+    requirements = extract_requirements(jd_text)
+
+    return requirements
