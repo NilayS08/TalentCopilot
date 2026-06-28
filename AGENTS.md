@@ -215,6 +215,7 @@ app/
         resume_extractor.py
         skill_matcher.py
         candidate_evaluator.py
+        candidate_ranker.py
 
     main.py
 
@@ -282,15 +283,29 @@ Later this service will include:
 
 ### Phase 8 — Candidate Ranking
 
-Support multiple uploaded resumes.
+**Status:** Implemented
 
-**Workflow (per candidate):**
+**Function:** `rank_candidates()` in `app/services/candidate_ranker.py`
 
+Takes a `JDRequirements` and `list[CandidateProfile]`, evaluates each via `evaluate_candidate()`, computes an overall score (average of skill + experience), sorts descending, and returns `list[RankedCandidate]`.
+
+**Output (`RankedCandidate`):**
+
+```json
+{
+    "rank": 1,
+    "candidate": { ... },
+    "evaluation": {
+        "skill_score": 90.0,
+        "experience_score": 80.0,
+        "matched_skills": [],
+        "missing_skills": []
+    },
+    "overall_score": 85.0
+}
 ```
-Resume → CandidateProfile → Evaluate → Score
-```
 
-Sort all candidates. Return ranked list.
+**API:** `POST /evaluation/rank` — accepts `JDRequirements` + list of `CandidateProfile`s, returns ranked list.
 
 ### Phase 9 — LLM Recruiter Insights
 
@@ -320,7 +335,9 @@ Frontend should allow:
 - Candidate ranking
 - Match score
 - Candidate details
+- Matched Skills
 - Missing skills
+- Experience
 - Recruiter insights
 
 ---
