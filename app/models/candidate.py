@@ -5,4 +5,4 @@ class CandidateProfile(BaseModel):
     skills:list[str]
     projects:list[str]
     experience:list[str]
-    education:list[str]
+    

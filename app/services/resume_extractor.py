@@ -30,15 +30,16 @@ Return ONLY JSON.
     "name": "",
     "skills": [],
     "projects": ["Project name: description"],
-    "experience": ["Job title at Company(dates):bullet summary"],
-    "education": [Degree, School(dates)]
+    "experience": ["Job title at Company(X years Y months):bullet summary"],
 }}
+
+For each experience entry, include the duration in "X years Y months" format inside parentheses after the company name. If the exact duration is not stated, infer it from dates if available, otherwise use your best estimate.
 
 Resume:
 {resume_text}
 """
 
-def _parse_json_response(response_text:str) -> dict:
+def _parse_json_response(response_text: str) -> dict:
     text = response_text.strip()
 
     if text.startswith("```"):
@@ -51,7 +52,7 @@ def _parse_json_response(response_text:str) -> dict:
 
     return json.loads(text)
 
-def extract_candidate_profile(resume_text:str) -> CandidateProfile:
+def extract_candidate_profile(resume_text: str) -> CandidateProfile:
     prompt = PROMPT.format(resume_text=resume_text)
 
     try:

@@ -140,6 +140,10 @@ Focus only on getting every module functional.
 }
 ```
 
+**Experience format:**
+
+Each entry uses `"Job title at Company(X years Y months):bullet summary"`. Duration is extracted in a deterministic format from dates or estimated if needed.
+
 ### 5. Exact Skill Matching
 
 **Status:** Implemented
@@ -256,16 +260,24 @@ Everything else should be **deterministic**.
 ```json
 {
     "skill_score": 82.0,
+    "experience_score": 100.0,
     "matched_skills": [],
     "missing_skills": []
 }
 ```
 
-Uses semantic skill matching on `required_skills` vs candidate `skills`.
+**Scoring:**
+
+- **Skill score** — Uses semantic skill matching on `required_skills` vs candidate `skills`.
+- **Experience score** — Parses duration (X years Y months) from each `experience` entry, sums total years, compares to `jd.experience_required`, capped at 100%.
+
+**Helpers in `candidate_evaluator.py`:**
+- `_parse_experience_years()` — extracts years/months from a single experience entry
+- `_parse_required_experience()` — parses the first numeric value from `jd.experience_required`
+- `_compute_experience_score()` — deterministic ratio-based scoring
 
 Later this service will include:
 
-- Experience score
 - Project relevance score
 
 ### Phase 8 — Candidate Ranking
@@ -318,7 +330,6 @@ Frontend should allow:
 These are intentionally postponed until the MVP is complete:
 
 - Better Pydantic schemas
-- Numeric experience extraction
 - Project relevance scoring
 - Education scoring
 - Embedding caching
