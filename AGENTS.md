@@ -216,6 +216,7 @@ app/
         skill_matcher.py
         candidate_evaluator.py
         candidate_ranker.py
+        insight_generator.py
 
     main.py
 
@@ -225,6 +226,22 @@ data/
 
 requirement.txt
 README.md
+setup.md
+
+frontend/
+    src/
+        App.jsx
+        main.jsx
+        index.css
+        components/
+            Sidebar.jsx
+            UploadSection.jsx
+            CandidateRanking.jsx
+            CandidateDetails.jsx
+            InfoPanel.jsx
+            UserFlow.jsx
+    vite.config.js
+    package.json
 ```
 
 ---
@@ -309,36 +326,42 @@ Takes a `JDRequirements` and `list[CandidateProfile]`, evaluates each via `evalu
 
 ### Phase 9 — LLM Recruiter Insights
 
-Only for **Top K** candidates.
+**Status:** Implemented
 
-Prompt Gemini to generate:
+**Function:** `generate_insight()` in `app/services/insight_generator.py`
 
-- Why candidate matches
-- Missing skills
-- Strengths
-- Weaknesses
-- Interview recommendation
+Takes a `JDRequirements`, `CandidateProfile`, and `CandidateEvaluation`, and returns a concise 1-2 sentence recruiter insight via Gemini.
 
-This keeps LLM costs low.
+**Output (`RecruiterInsight`):**
+
+```json
+{
+    "summary": "Strong Python and FastAPI skills align well with the Backend Engineer role. Has 5.5 years of relevant experience, recommend interview."
+}
+```
+
+**Usage:** Only call for **Top K** candidates after ranking to keep LLM costs low.
+
+**API:** `POST /evaluation/insight` — accepts `JDRequirements` + `CandidateProfile` + `CandidateEvaluation`, returns insight.
 
 ### Phase 10 — Recruiter Dashboard
 
-Frontend should allow:
+**Status:** Implemented
 
-**Upload:**
+Built with React + Vite + Tailwind CSS.
 
-- JD
-- Multiple resumes
+**Components:**
+- `Sidebar.jsx` — Dark navy sidebar (logo, nav, AI credits, recruiter profile)
+- `UploadSection.jsx` — Two drag-and-drop cards for JD and multiple resumes
+- `CandidateRanking.jsx` — Ranked table with name, experience, match score, status badge, view button
+- `CandidateDetails.jsx` — Expandable panel with circular progress, matched/missing skills, AI recommendation
+- `InfoPanel.jsx` — Workflow overview and match score guide
+- `UserFlow.jsx` — Visual 5-step flow at the bottom
 
-**Display:**
-
-- Candidate ranking
-- Match score
-- Candidate details
-- Matched Skills
-- Missing skills
-- Experience
-- Recruiter insights
+**Design system:**
+- Clean white background (#F8FAFC), dark sidebar (#0F172A), blue accent (#2563EB)
+- Tailwind CSS, React Icons, rounded cards (16px), subtle shadows
+- Responsive layout
 
 ---
 
